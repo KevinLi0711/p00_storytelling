@@ -5,9 +5,9 @@ P00 -- Storytelling Game
   
 ## Roster and Roles:
   
-Kevin Li:  Project Manager
-Joesph Wu:  Devo
-Matthew Yee:  Devo
+Kevin Li:  Project Manager 
+Joesph Wu:  Devo 
+Matthew Yee:  Devo 
 
   
 ## Description:
