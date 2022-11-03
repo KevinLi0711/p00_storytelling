@@ -2,3 +2,6 @@ design_wiki feedback from team Disturbed Window Monsters:
 - History of all edits could be displayed as a seperate component from the main page.
 - Editing mode for the entire page of the wiki, as opposed to editing individually paragraphs separately.
 
+kevinL -- 2022-11-2 21:24
+changed some word choices in design.pdf and clarified some parts that were found to be confusing
+updated the front end site map to include a create button and the page it leads to
