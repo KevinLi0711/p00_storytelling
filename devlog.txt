@@ -24,7 +24,7 @@ Flying Karate Masters
 Kevin Li
 Matthew Yee
 Joseph Wu
-pd <pd#>
+pd <pd7>
 ---------------------
 A website that lets users create stories by contributing one part at a time.
 
