@@ -42,7 +42,28 @@ A website that lets users create stories by contributing one part at a time.
 
 fristL -- TIMESTAMP
 --------------------------------------------------------------
-KevinL -- 2022-11-2 21:24
+kevinL -- 2022-11-02 21:24
 changed some word choices in design.pdf and clarified some parts that were found to be confusing
 updated the front end site map to include a create button and the page it leads to
+
+matthewY -- 2022-11-07 13:20
+copied login / logout code from 19_session as a base for this project
+
+kevinL -- 2022-11-08 20:46
+created testing.py to experiment with sqlite and document useful code bits 
+created users.db and inserted the following records for testing purposes
+    - karate, 1234
+    - Kevin, Li
+
+josephW -- 2022-11-08 21:19
+created register.html and a register url in order to create a register page. 
+- linked login page and register page
+- flask portion of code lacking
+  - missing a check of if username already in database
+  - missing a way to add new username and password to database
+
+kevinL -- 2022-11-08 22:32
+created a function to search the database for recordds matching the data inputted into the login screen
+    - but the data in cookies seem to not be getting removed?
+
 ==============================================================
