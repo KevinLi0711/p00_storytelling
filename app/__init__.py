@@ -12,7 +12,7 @@ import sqlite3
 
 app = Flask(__name__)    #create Flask object
 # Set the secret key to some random bytes. Keep this really secret!
-app.secret_key = b'_5#y2L"F4Q8z\n\xec]/'
+app.secret_key = b'v9y$B&E)H+MbQeThWmZq4t7w!z%C*F-J'
 
 USER_DB_FILE = "users.db"
 user_db = sqlite3.connect(USER_DB_FILE)
@@ -68,6 +68,7 @@ def logout():
     #print(session.keys)
     return app.redirect(app.url_for('login')) #Sends the user back to the login page
 
+'''
 @app.route('/register', methods=["GET", "POST"])
 def register():
     error=''
@@ -82,6 +83,7 @@ def register():
     
     if error=='':
         return app.redirect(app.url_for('login')) #Sends the user back to the login page
+'''
 
 if __name__ == "__main__": #false if this file imported as module
     #enable debugging, auto-restarting of server when this file is modified
