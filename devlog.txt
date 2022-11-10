@@ -54,9 +54,10 @@ created and made operational the register page and button back to login page.
     - page now adds users to data base if username doesn't already exist
 
 matthewY -- 2022-11-09 20:16
-added some code to prevent users from registering with whitespace in their username or password
-    - page now displays an error message informing the user whitespace prevention
-    - discovered that db.commit() is necessary to save changes to databases
+added a check to prevent users from registering with whitespace in their username or password
+    - page now displays an error message informing the user of whitespace prevention 
+    - also prevents users from registering with an empty username or password
+    - discovered that db.commit() is necessary to save changes to database
 
 kevinL -- 2022-11-09 20:25
 added more users into users.db as a result of testing:
