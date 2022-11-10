@@ -4,7 +4,21 @@
 #2022-11-03
 #time spent: 0.2 hours
 
-'''
+from flask import Flask             #facilitate flask webserving
+from flask import render_template   #facilitate jinja templating
+from flask import request           #facilitate form submission
+from flask import session
+import sqlite3
+
+app = Flask(__name__)    #create Flask object
+
+# Set the secret key to some random bytes. Keep this really secret!
+app.secret_key = b'_5#y2L"F4Q8z\n\xec]/'
+
+USER_DB_FILE = "users.db"
+user_db = sqlite3.connect(USER_DB_FILE)
+user_c = user_db.cursor()
+
 #to get contents of a database as a list:
 user_c.execute("SELECT * FROM users")
 credentials = user_c.fetchall()
@@ -36,21 +50,10 @@ print("===================")
 print("username is " + karate_credentials[0][0])
 print("password is " + karate_credentials[0][1])
 print("===================" + "\n")
+
+
+
 '''
-
-from flask import Flask             #facilitate flask webserving
-from flask import render_template   #facilitate jinja templating
-from flask import request           #facilitate form submission
-from flask import session
-import sqlite3
-
-app = Flask(__name__)    #create Flask object
-
-# Set the secret key to some random bytes. Keep this really secret!
-app.secret_key = b'_5#y2L"F4Q8z\n\xec]/'
-
-USER_DB_FILE = "users.db"
-
 @app.route('/', methods=['GET', 'POST'])
 def login():
     #both the database and the cursor need to be connected in the function it is used in because they must run in the same thread
@@ -107,3 +110,4 @@ if __name__ == "__main__": #false if this file imported as module
     #enable debugging, auto-restarting of server when this file is modified
     app.debug = True
     app.run()
+'''

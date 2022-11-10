@@ -15,75 +15,104 @@ app = Flask(__name__)    #create Flask object
 app.secret_key = b'v9y$B&E)H+MbQeThWmZq4t7w!z%C*F-J'
 
 USER_DB_FILE = "users.db"
-user_db = sqlite3.connect(USER_DB_FILE)
-user_c = user_db.cursor()
-
 STORY_DB_FILE = "story.db"
-story_db = sqlite3.connect(STORY_DB_FILE)
-story_c = story_db.cursor()
 
 @app.route('/', methods=['GET', 'POST'])
 def login():
+    #both the database and the cursor need to be connected in the function it is used in because they must run in the same thread
+    user_db = sqlite3.connect(USER_DB_FILE)
+    user_c = user_db.cursor()
     error = ""
+    username = ""
+    user_c.execute(f"SELECT * FROM users")
+    user_list = user_c.fetchall()
+    print(user_list)
 
-    #Only assign values to session is there are values in request.form to prevent a key error
-    if 'username' in request.form and 'password' in request.form:
-        session['username'] = request.form['username']
-        session['password'] = request.form['password']
+    if 'username' in request.form:
+        print("inputted username is " + request.form['username'])
+        print("inputted password is " + request.form['password'])
 
-    #Checks if the username and password are in session to prevent a key error
-    if 'username' in session and 'password' in session:
-        #Check if the username and password in session match a record in the database
-        user_c.execute("SELECT * FROM users GROUP BY username HAVING username=" + session['username'])
+        #to catch an incomplete operation exception that occurs if the user inputs nothing into the form
+        try:
+            username = request.form['username']
+            print(f"executing: SELECT * FROM users GROUP BY username HAVING username='{username}'")
+            user_c.execute(f"SELECT * FROM users GROUP BY username HAVING username='{username}'")
+        except:
+            error = "username not found"
+            print("user with username: " + request.form['username'] + " was not found in database")
+            return render_template('login.html', error_message = error)
+
         credentials = user_c.fetchall()
+        print(f"Found the following record for user {username}: {credentials}")
         #fetchall() in the line above returns a list of all records in which the username matches the query, 
         #but since usernames must be unique, fetchall() will return at most 1 element
+        if len(credentials) > 0:
+            #credentials looks like [(password, username)]
+            username = credentials[0][0]
+            password = credentials[0][1]
 
-        #credentials looks like [(password, username)]
-        username = credentials[0][0]
-        password = credentials[0][1]
-
-        if session['username'] == username and session['password'] == password:
-            return render_template('response.html', username = session['username'])
-
-        #print an error message on the bottom of the login page depending on what was wrong
-        if not session['password'] == password:
-            error = "incorrect password"
-        if not session['username'] == username:
+            if request.form['password'] == password:
+                #if password is correct, let the user login with that username
+                session['username'] = username
+                return render_template('response.html')
+            else:
+                error = "incorrect password"
+        else:
             error = "username not found"
-    
-    #might send user to the register page if they access it by typing in the URLy
-    if error=='':
-        return render_template('register.html')
-    
+
     return render_template('login.html', error_message = error)
 
 @app.route('/logout', methods=["GET", "POST"])
 def logout():
     #Checks if there is a username and password in session before popping to prevent a key error
-    if 'username' in session and 'password' in session:
+    if 'username' in session:
+        print("attempting to pop username")
         session.pop('username') #removes the username from the session
-        session.pop('password') #removes the password from the session
-    #print(session.__dict__)
-    #print(session.keys)
     return app.redirect(app.url_for('login')) #Sends the user back to the login page
 
-'''
+@app.route('/goingbacktologin', methods=["GET", "POST"])
+def tologin():
+    return app.redirect(app.url_for('login')) #Sends the user back to the login page
+
 @app.route('/register', methods=["GET", "POST"])
 def register():
     error=''
+    if request.method == 'POST':
 
-    #Change this to if username already exists in data base
-    if 'username' == 'hi':
-        error = 'Username already exists'
-        return render_template('register.html', error_message = error)
-    
-    else:
-        #add username and password into data base
-    
-    if error=='':
-        return app.redirect(app.url_for('login')) #Sends the user back to the login page
-'''
+        if request.form['username'] == '':
+            error = 'No username submitted'
+            return render_template('register.html', error_message = error)
+
+        if request.form['password'] == '':
+            error = 'No password submitted'
+            return render_template('register.html', error_message = error)
+
+        if ' ' in request.form['username'] or ' ' in request.form['password']:
+            error = 'Whitespace is not permitted in the username or password'
+            return render_template('register.html', error_message = error)
+
+        users_db = sqlite3.connect(USER_DB_FILE)
+        users_c = users_db.cursor()
+        users_c.execute(f"SELECT * FROM users GROUP BY username HAVING username='{request.form['username']}'")
+        user_list = users_c.fetchall()
+        
+        #username already exists
+        if len(user_list) > 0:
+            error = 'Username already exists'
+            return render_template('register.html', error_message = error)
+        else:
+            command = f"INSERT INTO users values('{request.form['username']}','{request.form['password']}');"
+            users_c.execute(command)
+            users_db.commit()
+            
+            users_c.execute(f"SELECT * FROM users")
+            user_list = users_c.fetchall()
+            print(user_list)
+            error = 'Account Created, Navigate to Login'
+            return render_template('register.html', error_message = error)
+            #confirmation message
+            
+    return render_template('register.html')
 
 if __name__ == "__main__": #false if this file imported as module
     #enable debugging, auto-restarting of server when this file is modified

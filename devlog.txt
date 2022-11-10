@@ -2,29 +2,11 @@ design_wiki feedback from team Disturbed Window Monsters:
 - History of all edits could be displayed as a seperate component from the main page.
 - Editing mode for the entire page of the wiki, as opposed to editing individually paragraphs separately.
 
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-USAGE:
-* Replace all fields, angle brackets included, with specified info.
-  eg, pd <pd#> --> pd 3
-* Delete these instructions once all teammates understand usage.
-  (from tilde bar above to tilde bar below)
-* rename this file devlog.txt
-
-devlog--
-Use keyboard shortcut to jump to end,
- replicate entry template, (Ctrl-Shift up x5, Ctrl-X, Ctrl-V x2)
- modify appropriately.
-Each entry should begin with the following format:
- firstL -- TIMESTAMP\n
-e.g.: 
-clydeS -- 2999-12-31 23:59
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
 Flying Karate Masters
 Kevin Li
 Matthew Yee
 Joseph Wu
-pd <pd7>
+pd 7
 ---------------------
 A website that lets users create stories by contributing one part at a time.
 
@@ -63,7 +45,22 @@ created register.html and a register url in order to create a register page.
   - missing a way to add new username and password to database
 
 kevinL -- 2022-11-08 22:32
-created a function to search the database for recordds matching the data inputted into the login screen
+created a function to search the database for records matching the data inputted into the login screen
     - but the data in cookies seem to not be getting removed?
+    - turns out it was because the secret key in that file was the same as the secret key in another file
+
+josephW -- 2022-11-09 20:14
+created and made operational the register page and button back to login page.
+    - page now adds users to data base if username doesn't already exist
+
+matthewY -- 2022-11-09 20:16
+added some code to prevent users from registering with whitespace in their username or password
+    - page now displays an error message informing the user whitespace prevention
+    - discovered that db.commit() is necessary to save changes to databases
+
+kevinL -- 2022-11-09 20:25
+added more users into users.db as a result of testing:
+    - Matthew, Yee
+    - Joseph, Wu
 
 ==============================================================
