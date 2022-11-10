@@ -20,12 +20,12 @@ STORY_DB_FILE = "story.db"
 @app.route('/', methods=['GET', 'POST'])
 def login():
     #both the database and the cursor need to be connected in the function it is used in because they must run in the same thread
-    user_db = sqlite3.connect(USER_DB_FILE)
-    user_c = user_db.cursor()
+    users_db = sqlite3.connect(USER_DB_FILE)
+    users_c = user_db.cursor()
     error = ""
     username = ""
-    user_c.execute(f"SELECT * FROM users")
-    user_list = user_c.fetchall()
+    users_c.execute(f"SELECT * FROM users")
+    user_list = users_c.fetchall()
     print(user_list)
 
     if 'username' in request.form:
@@ -36,13 +36,13 @@ def login():
         try:
             username = request.form['username']
             print(f"executing: SELECT * FROM users GROUP BY username HAVING username='{username}'")
-            user_c.execute(f"SELECT * FROM users GROUP BY username HAVING username='{username}'")
+            users_c.execute(f"SELECT * FROM users GROUP BY username HAVING username='{username}'")
         except:
             error = "username not found"
             print("user with username: " + request.form['username'] + " was not found in database")
             return render_template('login.html', error_message = error)
 
-        credentials = user_c.fetchall()
+        credentials = users_c.fetchall()
         print(f"Found the following record for user {username}: {credentials}")
         #fetchall() in the line above returns a list of all records in which the username matches the query, 
         #but since usernames must be unique, fetchall() will return at most 1 element
