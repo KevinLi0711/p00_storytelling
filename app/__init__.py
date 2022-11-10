@@ -54,7 +54,7 @@ def login():
             if request.form['password'] == password:
                 #if password is correct, let the user login with that username
                 session['username'] = username
-                return render_template('response.html')
+                return app.redirect(app.url_for('main'))
             else:
                 error = "incorrect password"
         else:
@@ -113,6 +113,14 @@ def register():
             #confirmation message
             
     return render_template('register.html')
+
+@app.route('/main', methods = ['GET', 'POST'])
+def main():
+    return render_template('main.html')
+
+@app.route('/create', methods = ['GET', 'POST'])
+def makeStory():
+    return render_template('main.html')
 
 if __name__ == "__main__": #false if this file imported as module
     #enable debugging, auto-restarting of server when this file is modified
