@@ -21,7 +21,7 @@ STORY_DB_FILE = "story.db"
 def login():
     #both the database and the cursor need to be connected in the function it is used in because they must run in the same thread
     users_db = sqlite3.connect(USER_DB_FILE)
-    users_c = user_db.cursor()
+    users_c = users_db.cursor()
     error = ""
     username = ""
     users_c.execute(f"SELECT * FROM users")
