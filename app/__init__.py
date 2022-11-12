@@ -117,7 +117,11 @@ def register():
 
 @app.route('/main', methods = ['GET', 'POST'])
 def main():
-    return render_template('main.html')
+    try:
+        return render_template('main.html', username=session['username'])
+    except:
+        return app.redirect(app.url_for('login'))
+    
 
 @app.route('/create', methods = ['GET', 'POST'])
 def makeStory():

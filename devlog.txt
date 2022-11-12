@@ -69,11 +69,13 @@ created a home page and changed a line in login() to redirect to this new page u
 
 josephW -- 2022-11-10 13:19
 created a button to return the user to the home page
-created a button on the registratio page to return to the login page
+created a button on the registration page to return to the login page
 
 kevinL -- 2022-11-11 20:25
 replaced f strings in sqlite queries with ? substitutions
     - found out that these substitutions require a tuple parameter
 put readme in code blocks
+added a try except statement to main() that redirects the user back to the login page if they are not logged in
+changed html templates to make them more distinct
 
 ==============================================================
