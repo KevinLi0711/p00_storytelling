@@ -35,8 +35,9 @@ def login():
         #to catch an incomplete operation exception that occurs if the user inputs nothing into the form
         try:
             username = request.form['username']
-            print(f"executing: SELECT * FROM users GROUP BY username HAVING username='{username}'")
-            users_c.execute(f"SELECT * FROM users GROUP BY username HAVING username='{username}'")
+            #inserts username as a tuple containing one item because the ? substitution requires a tuple
+            print("executing: SELECT * FROM users GROUP BY username HAVING username=?", (username,))
+            users_c.execute("SELECT * FROM users GROUP BY username HAVING username=?", (username,))
         except:
             error = "username not found"
             print("user with username: " + request.form['username'] + " was not found in database")

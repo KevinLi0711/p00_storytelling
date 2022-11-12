@@ -13,6 +13,12 @@ Matthew Yee:  Devo
 A website that lets users create stories by contributing one part at a time.
 
 ## Launch Codes:
+```
 git clone https://github.com/KevinLi0711/p00_storytelling.git  
-cd into app  
+```
+```
+cd p00_storytelling/app
+```
+```
 python3 __init__.py
+```

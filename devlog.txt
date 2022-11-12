@@ -64,4 +64,16 @@ added more users into users.db as a result of testing:
     - Matthew, Yee
     - Joseph, Wu
 
+matthewY -- 2022-11-10 13:19
+created a home page and changed a line in login() to redirect to this new page upon logging in
+
+josephW -- 2022-11-10 13:19
+created a button to return the user to the home page
+created a button on the registratio page to return to the login page
+
+kevinL -- 2022-11-11 20:25
+replaced f strings in sqlite queries with ? substitutions
+    - found out that these substitutions require a tuple parameter
+put readme in code blocks
+
 ==============================================================
