@@ -87,4 +87,19 @@ created a page for making new stories
       - navigation back to home page
       - prevention of duplicate titles, which results in the app crashing
 
+kevinL -- 2022-11-13 17:17
+replaced more f strings in sqlite queries with ? substitutions
+
+josephW -- 2022-11-13 17:50
+created buttons to navigate to and from the story creation page to the main page
+added display of stories in database on the main page
+
+kevinL -- 2022-11-13 18:08
+found a way to display the names of all tables in a database
+added exception handling to the story creation page
+
+kevinL -- 2022-11-13 18:23
+fixed an error not being displayed when trying to create a story with a title that already exists
+found out how to use for loops in jinja
+
 ==============================================================

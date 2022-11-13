@@ -19,6 +19,10 @@ USER_DB_FILE = "users.db"
 user_db = sqlite3.connect(USER_DB_FILE)
 user_c = user_db.cursor()
 
+STORY_DB_FILE = "story.db"
+story_db = sqlite3.connect(STORY_DB_FILE)
+story_c = story_db.cursor()
+
 #to get contents of a database as a list:
 user_c.execute("SELECT * FROM users")
 credentials = user_c.fetchall()
@@ -49,6 +53,14 @@ print("Karate Credentials")
 print("===================")
 print("username is " + karate_credentials[0][0])
 print("password is " + karate_credentials[0][1])
+print("===================" + "\n")
+
+#to get a list of tables
+story_c.execute("SELECT tbl_name FROM sqlite_schema")
+list_of_tables = story_c.fetchall()
+print("List of tables")
+print("===================")
+print(list_of_tables)
 print("===================" + "\n")
 
 

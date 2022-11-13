@@ -19,7 +19,11 @@
     <h1>
       Write some stuff!
     </h1>
-
+    <form method="POST" action="/main">
+      <button name="Home">
+          Home
+      </button>
+    </form>
     <form method="POST">
       Title
       <br>
@@ -33,7 +37,9 @@
       <input type="submit" name="sub1">
     </form>
     <br>
-    {{error_message}}
+    {% for error in error_message %}
+        {{error}} <br>
+    {% endfor %}
   </body>
 
 </html>

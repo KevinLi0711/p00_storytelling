@@ -15,13 +15,26 @@
             Home
         </button>
     </form>
-    Flying Karate Masters: Matthew Yee, Kevin Li, Joseph Wu
-    <h1>
-        Welcome to the main page, {{username}}
-    </h1>
     <form method="POST" action="/logout">
         <button name="B_logout">
             Logout
         </button>
     </form>
+    Flying Karate Masters: Matthew Yee, Kevin Li, Joseph Wu
+    <h1>
+        Welcome to the main page, {{username}}
+    </h1>
+
+    <form method="GET" action="/create">
+        <button name="create_story">
+            New Story
+        </button>
+    </form>
+
+    </p>
+    List of Stories: 
+    {% autoescape false %}
+        <br>{{stories}}
+    {% endautoescape %}
+    <p>
 </html>

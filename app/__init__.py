@@ -94,7 +94,8 @@ def register():
 
         users_db = sqlite3.connect(USER_DB_FILE)
         users_c = users_db.cursor()
-        users_c.execute(f"SELECT * FROM users GROUP BY username HAVING username='{request.form['username']}'")
+        username = request.form['username']
+        users_c.execute("SELECT * FROM users GROUP BY username HAVING username=?", (username,))
         user_list = users_c.fetchall()
         
         #username already exists
@@ -102,11 +103,12 @@ def register():
             error = 'Username already exists'
             return render_template('register.html', error_message = error)
         else:
-            command = f"INSERT INTO users values('{request.form['username']}','{request.form['password']}');"
-            users_c.execute(command)
+            password = request.form['password']
+            command ="INSERT INTO users values(?, ?);"
+            users_c.execute(command, (username, password))
             users_db.commit()
             
-            users_c.execute(f"SELECT * FROM users")
+            users_c.execute("SELECT * FROM users")
             user_list = users_c.fetchall()
             print(user_list)
             error = 'Account Created, Navigate to Login'
@@ -117,32 +119,58 @@ def register():
 
 @app.route('/main', methods = ['GET', 'POST'])
 def main():
+    stories_available = ''
+
+    story_db = sqlite3.connect(STORY_DB_FILE)
+    story_c = story_db.cursor()
+    story_c.execute("SELECT tbl_name FROM sqlite_schema")
+    story_list = story_c.fetchall()
+
+    for i in story_list:
+        for a in i:
+            stories_available += a+'<br>'
+    
     try:
-        return render_template('main.html', username=session['username'])
+        return render_template('main.html', username=session['username'], stories = stories_available)
     except:
         return app.redirect(app.url_for('login'))
-    
 
 @app.route('/create', methods = ['GET', 'POST'])
 def makeStory():
     if request.method == 'POST':
         stories_db = sqlite3.connect(STORY_DB_FILE)
         stories_c = stories_db.cursor()
-        stories_list = stories_c.fetchall()
         
-        command = f"CREATE TABLE '{request.form['title']}' (Entry, Username);"
-        stories_c.execute(command)
-        command = f"INSERT INTO '{request.form['title']}' values('{request.form['contents']}','{session['username']}');"
-        stories_c.execute(command)
+        title = request.form['title']
+        contents = request.form['contents']
+        username = session['username']
+        list_of_errors = []
+
+        try:
+            command = "CREATE TABLE '?' (Entry, Username);"
+            stories_c.execute(command, (title,))
+        except:
+            if (title.strip() == ''):
+                list_of_errors.append("your story needs a title")
+            if (contents.strip() == ''):
+                list_of_errors.append("your story needs some starting lines")
+            #currently doesn't work
+            stories_c.execute("SELECT tbl_name FROM sqlite_schema")
+            list_of_titles = stories_c.fetchall()
+            title = (title,)
+            print("Title exists: " + str(title in list_of_titles))
+            if title in list_of_titles:
+                list_of_errors.append("a story with that name already exists")
+            return render_template('new_story.html', error_message = list_of_errors)
+
+        command = "INSERT INTO '?' values('?','?');"
+        stories_c.execute(command, (title, contents, username))
         stories_db.commit()
 
-        print(stories_list)
-
+        print(list_of_titles)
         error = 'Story created, navigate to the home page to see all your stories.'
-
         return render_template('new_story.html', error_message = error)
     return render_template('new_story.html')
-
 if __name__ == "__main__": #false if this file imported as module
     #enable debugging, auto-restarting of server when this file is modified
     app.debug = True
