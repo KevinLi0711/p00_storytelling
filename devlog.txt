@@ -78,4 +78,13 @@ put readme in code blocks
 added a try except statement to main() that redirects the user back to the login page if they are not logged in
 changed html templates to make them more distinct
 
+matthewY -- 2002-11-13 00:50
+created a page for making new stories
+    - found at /create
+    - page now takes a title and multi-line text as the contents of the story, and creates a table based on the title
+    - populates said table with a single entry involving the contents and username of the user who created the story
+    - new_story page is missing:
+      - navigation back to home page
+      - prevention of duplicate titles, which results in the app crashing
+
 ==============================================================

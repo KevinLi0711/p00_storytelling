@@ -125,7 +125,23 @@ def main():
 
 @app.route('/create', methods = ['GET', 'POST'])
 def makeStory():
-    return render_template('main.html')
+    if request.method == 'POST':
+        stories_db = sqlite3.connect(STORY_DB_FILE)
+        stories_c = stories_db.cursor()
+        stories_list = stories_c.fetchall()
+        
+        command = f"CREATE TABLE '{request.form['title']}' (Entry, Username);"
+        stories_c.execute(command)
+        command = f"INSERT INTO '{request.form['title']}' values('{request.form['contents']}','{session['username']}');"
+        stories_c.execute(command)
+        stories_db.commit()
+
+        print(stories_list)
+
+        error = 'Story created, navigate to the home page to see all your stories.'
+
+        return render_template('new_story.html', error_message = error)
+    return render_template('new_story.html')
 
 if __name__ == "__main__": #false if this file imported as module
     #enable debugging, auto-restarting of server when this file is modified
