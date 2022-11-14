@@ -102,4 +102,8 @@ kevinL -- 2022-11-13 18:23
 fixed an error not being displayed when trying to create a story with a title that already exists
 found out how to use for loops in jinja
 
+kevinL -- 2022-11-13 23:17
+added comments and discovered the cause behind a bug
+    - we can't use ? substitution for table names
+
 ==============================================================

@@ -24,31 +24,35 @@ def login():
     users_c = users_db.cursor()
     error = ""
     username = ""
-    users_c.execute(f"SELECT * FROM users")
+    users_c.execute("SELECT * FROM users")
     user_list = users_c.fetchall()
     print(user_list)
 
-    if 'username' in request.form:
+    #the following code will only run if the user submits the form on the login page
+    if request.method == "POST":
+        #diagnostic prints
         print("inputted username is " + request.form['username'])
         print("inputted password is " + request.form['password'])
 
-        #to catch an incomplete operation exception that occurs if the user inputs nothing into the form
+        #to catch an incomplete operation exception that occurs if the username field is
         try:
             username = request.form['username']
             #inserts username as a tuple containing one item because the ? substitution requires a tuple
+            #looks in the database to see if the username entered exists in the users database
             print("executing: SELECT * FROM users GROUP BY username HAVING username=?", (username,))
             users_c.execute("SELECT * FROM users GROUP BY username HAVING username=?", (username,))
         except:
+            #print error message if username is not found in database
             error = "username not found"
             print("user with username: " + request.form['username'] + " was not found in database")
             return render_template('login.html', error_message = error)
-
+        #if username is found, get the corresponding record from the database
         credentials = users_c.fetchall()
         print(f"Found the following record for user {username}: {credentials}")
-        #fetchall() in the line above returns a list of all records in which the username matches the query, 
-        #but since usernames must be unique, fetchall() will return at most 1 element
+        
+        #since we got the record as a list of tuples, we can check the length of the list to see if the query had any matches
+        #username is a primary key, so there will be at most one record
         if len(credentials) > 0:
-            #credentials looks like [(password, username)]
             username = credentials[0][0]
             password = credentials[0][1]
 
@@ -79,38 +83,42 @@ def tologin():
 def register():
     error=''
     if request.method == 'POST':
-
-        if request.form['username'] == '':
+        #check for an empty username
+        if request.form['username'].strip() == '':
             error = 'No username submitted'
             return render_template('register.html', error_message = error)
-
-        if request.form['password'] == '':
+        #check for an empty password
+        if request.form['password'].strip() == '':
             error = 'No password submitted'
             return render_template('register.html', error_message = error)
-
+        #prevent whitespaces to prevent usernames and passwords like "         e"
         if ' ' in request.form['username'] or ' ' in request.form['password']:
             error = 'Whitespace is not permitted in the username or password'
             return render_template('register.html', error_message = error)
 
         users_db = sqlite3.connect(USER_DB_FILE)
         users_c = users_db.cursor()
+        #get the record with the username entered
         username = request.form['username']
         users_c.execute("SELECT * FROM users GROUP BY username HAVING username=?", (username,))
         user_list = users_c.fetchall()
         
-        #username already exists
+        #if the record / username exists
         if len(user_list) > 0:
             error = 'Username already exists'
             return render_template('register.html', error_message = error)
         else:
             password = request.form['password']
+            #add the user into the user database
             command ="INSERT INTO users values(?, ?);"
             users_c.execute(command, (username, password))
             users_db.commit()
             
+            #diagnostic print
             users_c.execute("SELECT * FROM users")
             user_list = users_c.fetchall()
             print(user_list)
+
             error = 'Account Created, Navigate to Login'
             return render_template('register.html', error_message = error)
             #confirmation message
@@ -123,9 +131,11 @@ def main():
 
     story_db = sqlite3.connect(STORY_DB_FILE)
     story_c = story_db.cursor()
+    #get a list of table names
     story_c.execute("SELECT tbl_name FROM sqlite_schema")
     story_list = story_c.fetchall()
 
+    #for each table, print the title on a new line
     for i in story_list:
         for a in i:
             stories_available += a+'<br>'
@@ -147,30 +157,41 @@ def makeStory():
         list_of_errors = []
 
         try:
-            command = "CREATE TABLE '?' (Entry, Username);"
+            #attempt to create a table with the user's title
+            #turns out this doesn't work because the table name cannot be replaced using ? substitution
+            command = "CREATE TABLE ? (Entry text, Username PRIMARY KEY)"
             stories_c.execute(command, (title,))
+            print(f"Your story named {title} was successfully created")
         except:
+            print(f"Your story named {title} was not created")
+            #if the title is empty
             if (title.strip() == ''):
                 list_of_errors.append("your story needs a title")
+            #if the first entry is empty
             if (contents.strip() == ''):
                 list_of_errors.append("your story needs some starting lines")
-            #currently doesn't work
+
+            #get a list of titles
             stories_c.execute("SELECT tbl_name FROM sqlite_schema")
             list_of_titles = stories_c.fetchall()
             title = (title,)
-            print("Title exists: " + str(title in list_of_titles))
             if title in list_of_titles:
                 list_of_errors.append("a story with that name already exists")
             return render_template('new_story.html', error_message = list_of_errors)
 
-        command = "INSERT INTO '?' values('?','?');"
-        stories_c.execute(command, (title, contents, username))
+        #puts the user's entry and username into the databse
+        stories_c.execute("INSERT INTO ? values('?','?');", (title, contents, username))
         stories_db.commit()
 
+        #diagnostic print
+        stories_c.execute("SELECT tbl_name FROM sqlite_schema")
+        list_of_titles = stories_c.fetchall()
         print(list_of_titles)
+
         error = 'Story created, navigate to the home page to see all your stories.'
         return render_template('new_story.html', error_message = error)
     return render_template('new_story.html')
+
 if __name__ == "__main__": #false if this file imported as module
     #enable debugging, auto-restarting of server when this file is modified
     app.debug = True
