@@ -33,12 +33,14 @@
 
     </p>
     List of Stories: 
-    {% for tuple in story_list %}
-        {{title}} 
-        <br>
-        <button name="title">
-            edit
-        </button>
+    <br>
+    {% for story in story_list %}
+        {{story}} 
+        <form method="POST" action="/edit">
+            <button name="title" value="{{story}}">
+                edit
+            </button>
+        </form>
         <br>
     {% endfor %}
     <p>

@@ -104,7 +104,7 @@ def register():
         users_c = users_db.cursor()
         #get the record with the username entered
         username = request.form['username']
-        users_c.execute("SELECT * FROM users GROUP BY username HAVING username='?'", (username,))
+        users_c.execute("SELECT * FROM users GROUP BY username HAVING username=?", (username,))
         user_list = users_c.fetchall()
         
         #if the record / username exists
@@ -114,7 +114,7 @@ def register():
         else:
             password = request.form['password']
             #add the user into the user database
-            command ="INSERT INTO users values('?', '?');"
+            command ="INSERT INTO users values(?, ?);"
             users_c.execute(command, (username, password))
             users_db.commit()
             
@@ -131,7 +131,7 @@ def register():
 
 @app.route('/main', methods = ['GET', 'POST'])
 def main():
-    stories_available = ''
+    stories_available = []
 
     story_db = sqlite3.connect(STORY_DB_FILE)
     story_c = story_db.cursor()
@@ -142,10 +142,11 @@ def main():
     #for each table, print the title on a new line
     for i in story_list:
         for a in i:
-            stories_available += a+'<br>'
+            stories_available.append(a)
     
+    print(stories_available)
     try:
-        return render_template('main.html', username=session['username'], stories = stories_available)
+        return render_template('main.html', username=session['username'], story_list = stories_available)
     except:
         return app.redirect(app.url_for('login'))
 
@@ -192,6 +193,8 @@ def edit():
         stories_db = sqlite3.connect(STORY_DB_FILE)
         stories_c = stories_db.cursor()
         title = request.form['title']
+        print(title)
+
     return render_template('edit.html')
     '''
     elif 'username' in session:
