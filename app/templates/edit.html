@@ -11,7 +11,7 @@
 <html>
 
   <head>
-    <title> NEW STORY PAGE </title>
+    <title> EDIT STORY PAGE </title>
   </head>
   Flying Karate Masters: Matthew Yee, Kevin Li, Joseph Wu 
   <br>
@@ -25,22 +25,17 @@
       </button>
     </form>
     <form method="POST">
-      Title
+      Previous Line:
       <br>
-      <input type="text" name="title">
+      {{latest_entry}}
       <br>
-      Story
+      Your continuation:
       <br>
       <textarea name="contents" rows = "20" cols = "60">
       </textarea>
       <br>
       <input type="submit" name="sub1">
     </form>
-    <br>
-    {{message}}
-    {% for error in error_message %}
-        {{error}} <br>
-    {% endfor %}
   </body>
 
 </html>

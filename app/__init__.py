@@ -19,6 +19,8 @@ STORY_DB_FILE = "story.db"
 
 @app.route('/', methods=['GET', 'POST'])
 def login():
+    if 'username' in session:
+        return app.redirect("/main")
     #both the database and the cursor need to be connected in the function it is used in because they must run in the same thread
     users_db = sqlite3.connect(USER_DB_FILE)
     users_c = users_db.cursor()
@@ -81,6 +83,8 @@ def tologin():
 
 @app.route('/register', methods=["GET", "POST"])
 def register():
+    if 'username' in session:
+        return app.redirect("/main")
     error=''
     if request.method == 'POST':
         #check for an empty username
@@ -100,7 +104,7 @@ def register():
         users_c = users_db.cursor()
         #get the record with the username entered
         username = request.form['username']
-        users_c.execute("SELECT * FROM users GROUP BY username HAVING username=?", (username,))
+        users_c.execute("SELECT * FROM users GROUP BY username HAVING username='?'", (username,))
         user_list = users_c.fetchall()
         
         #if the record / username exists
@@ -110,7 +114,7 @@ def register():
         else:
             password = request.form['password']
             #add the user into the user database
-            command ="INSERT INTO users values(?, ?);"
+            command ="INSERT INTO users values('?', '?');"
             users_c.execute(command, (username, password))
             users_db.commit()
             
@@ -132,7 +136,7 @@ def main():
     story_db = sqlite3.connect(STORY_DB_FILE)
     story_c = story_db.cursor()
     #get a list of table names
-    story_c.execute("SELECT tbl_name FROM sqlite_schema")
+    story_c.execute("SELECT title FROM stories")
     story_list = story_c.fetchall()
 
     #for each table, print the title on a new line
@@ -147,6 +151,8 @@ def main():
 
 @app.route('/create', methods = ['GET', 'POST'])
 def makeStory():
+    if not 'username' in session:
+        return app.redirect("/")
     if request.method == 'POST':
         stories_db = sqlite3.connect(STORY_DB_FILE)
         stories_c = stories_db.cursor()
@@ -156,41 +162,45 @@ def makeStory():
         username = session['username']
         list_of_errors = []
 
-        try:
-            #attempt to create a table with the user's title
-            #turns out this doesn't work because the table name cannot be replaced using ? substitution
-            command = "CREATE TABLE ? (Entry text, Username PRIMARY KEY)"
-            stories_c.execute(command, (title,))
-            print(f"Your story named {title} was successfully created")
-        except:
-            print(f"Your story named {title} was not created")
-            #if the title is empty
-            if (title.strip() == ''):
-                list_of_errors.append("your story needs a title")
-            #if the first entry is empty
-            if (contents.strip() == ''):
-                list_of_errors.append("your story needs some starting lines")
-
-            #get a list of titles
-            stories_c.execute("SELECT tbl_name FROM sqlite_schema")
-            list_of_titles = stories_c.fetchall()
-            title = (title,)
-            if title in list_of_titles:
-                list_of_errors.append("a story with that name already exists")
+        #all expected errors
+        stories_c.execute("SELECT title FROM stories")
+        list_of_titles = stories_c.fetchall()
+        if (title,) in list_of_titles:
+            list_of_errors.append("a story with that name already exists")
+        if (title.strip() == ''):
+            list_of_errors.append("your story needs a title")
+        if (contents.strip() == ''):
+            list_of_errors.append("your story needs some starting lines")
+        if len(list_of_errors) > 0:
             return render_template('new_story.html', error_message = list_of_errors)
 
-        #puts the user's entry and username into the databse
-        stories_c.execute("INSERT INTO ? values('?','?');", (title, contents, username))
-        stories_db.commit()
-
-        #diagnostic print
-        stories_c.execute("SELECT tbl_name FROM sqlite_schema")
-        list_of_titles = stories_c.fetchall()
-        print(list_of_titles)
-
-        error = 'Story created, navigate to the home page to see all your stories.'
-        return render_template('new_story.html', error_message = error)
+        try:
+            stories_c.execute("INSERT INTO stories VALUES (?, ?, ?, ?)", (title, contents, contents, username))
+            stories_db.commit()
+        except:
+            return render_template('new_story.html', message = "an unexpected error has occurred, please try with a different title and / or text")
+        
+        stories_c.execute("SELECT title FROM stories")
+        print(stories_c.fetchall())
+        response = 'Story created, navigate to the home page to see all your stories.'
+        return render_template('new_story.html', message = response)
     return render_template('new_story.html')
+
+@app.route('/edit', methods = ['GET', 'POST'])
+def edit():
+    if request.method == "POST":
+        stories_db = sqlite3.connect(STORY_DB_FILE)
+        stories_c = stories_db.cursor()
+        title = request.form['title']
+    return render_template('edit.html')
+    '''
+    elif 'username' in session:
+        return app.redirect("/main")
+    else:
+        return app.redirect("/")
+    '''
+        
+
 
 if __name__ == "__main__": #false if this file imported as module
     #enable debugging, auto-restarting of server when this file is modified

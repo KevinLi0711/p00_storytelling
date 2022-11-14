@@ -33,8 +33,13 @@
 
     </p>
     List of Stories: 
-    {% autoescape false %}
-        <br>{{stories}}
-    {% endautoescape %}
+    {% for tuple in story_list %}
+        {{title}} 
+        <br>
+        <button name="title">
+            edit
+        </button>
+        <br>
+    {% endfor %}
     <p>
 </html>

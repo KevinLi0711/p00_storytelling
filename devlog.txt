@@ -103,7 +103,13 @@ fixed an error not being displayed when trying to create a story with a title th
 found out how to use for loops in jinja
 
 kevinL -- 2022-11-13 23:17
-added comments and discovered the cause behind a bug
+added comments and discovered the cause behind stories not being added into the database
     - we can't use ? substitution for table names
 
+kevinL -- 2022-11-14 01:39
+changed story database structure, merging everything into one table, and fixing the problem of stories not being added into the database properly
+addded additional if statements to prevent users logged in / not logged in from viewing pages they shouldn't be able to
+
+kevinL -- 2022-11-14 02:04
+created an html template for the edit page
 ==============================================================
