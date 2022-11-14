@@ -195,7 +195,11 @@ def edit():
         title = request.form['title']
         print(title)
 
-    return render_template('edit.html')
+        stories_c.execute("SELECT latest_entry FROM stories WHERE title=?", (title,))
+        previous_entry = stories_c.fetchone()
+        previous_entry = previous_entry[0]
+
+    return render_template('edit.html', story_title = title, latest_entry = previous_entry)
     '''
     elif 'username' in session:
         return app.redirect("/main")

@@ -116,4 +116,5 @@ created an html template for the edit page
 josephW -- 2022-11-14 13:17
 found a way to pass a title through the form action tag
 found a way to list all story titles on the main page, along with buttons for each that take the user to the editing page
+
 ==============================================================
