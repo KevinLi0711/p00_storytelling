@@ -41,7 +41,7 @@ def login():
     username = ""
     users_c.execute("SELECT * FROM users")
     user_list = users_c.fetchall()
-    print("valid usernames are :" + str(user_list))
+    print("valid accounts are :" + str(user_list))
 
     #the following code will only run if the user submits the form on the login page
     if request.method == "POST":
@@ -168,6 +168,7 @@ def main():
             contributed.append(title[0])
         else:
             not_contributed.append(title[0])
+    print("Created: " + str(created))
     print("Contributed: " + str(contributed))
     print("Not contributed: " + str(not_contributed))
 

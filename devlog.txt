@@ -136,4 +136,8 @@ created a search bar
     - searches are not case-sensitive
 restructured main page such that stories created by the user would appear under their own header
 
+matthewYe -- 2022-11-14 00:08
+added comments
+cleaned up/clarified some print statements
+
 ==============================================================
