@@ -126,7 +126,4 @@ created a dict in order to pass number of entries and story titles into the main
 
 kevinL -- 2022-11-14 20:31
 created an extra section on the main page to separate stories the user has contributed to, and stories they haven't
-
-kevinL -- 2022-11-14 22:34
-added lines to login() to create tables for the databases if they don't already exist
 ==============================================================
