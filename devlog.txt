@@ -138,10 +138,14 @@ created a search bar
 restructured main page such that stories created by the user would appear under their own header
 
 matthewY -- 2022-11-14 00:08
-added comments
+added comments to old code
 cleaned up/clarified some print statements
 
 kevinL -- 2022-11-15 00:16
 updated design doc to include refactored story database structure
+
+matthewY -- 2022-11-15 00:23
+added a 200 character limit to additions to existing stories
+    - adjusted the size of the textarea accordingly
 
 ==============================================================
