@@ -221,7 +221,7 @@ def makeStory():
             stories_c.execute("INSERT INTO stories VALUES (?, ?, ?, ?)", (title, contents, contents, username))
             stories_db.commit()
         except:
-            return render_template('new_story.html', message = "an unexpected error has occurred, please try with a different title and / or text")
+            return render_template('new_story.html', message = "an unexpected error has occurred, please try with a different title and / or text") #exception handling
         
         stories_c.execute("SELECT title FROM stories")
         print(stories_c.fetchall())
@@ -288,20 +288,17 @@ def search():
 
         search_results = []
 
-        #story_list is a tuple list
-        for title in story_list:
-            if request.form['find'].lower() in title[0].lower():
+        for title in story_list: #populates list of stories that match the search
+            if request.form['find'].lower() in title[0].lower(): #ensures non-case-sensitive searching
                 search_results.append(title[0])
         
-        #running through the newly created string list to find # of entries pertaining to each result
-        #result and numbers added to dict
-        for title in search_results:
+        for title in search_results: #converts list into dict with titles as keys and number of entries as definitions
             story_c.execute("SELECT contributors FROM stories WHERE title=?", (title,))
             numbers = story_c.fetchone()[0]
             number_list = numbers.split(" ")
             search_dict[title] = len(number_list)
 
-        if len(search_results) == 0:
+        if len(search_results) == 0: #returns an error if search produces no results
             error = f"No results found for '{request.form['find']}'"
 
         return render_template('search.html', search = request.form['find'], search_dict = search_dict, error_message = error)
