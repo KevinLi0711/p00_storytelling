@@ -1,7 +1,3 @@
-design_wiki feedback from team Disturbed Window Monsters:
-- History of all edits could be displayed as a seperate component from the main page.
-- Editing mode for the entire page of the wiki, as opposed to editing individually paragraphs separately.
-
 Flying Karate Masters
 Kevin Li
 Matthew Yee
@@ -24,6 +20,11 @@ A website that lets users create stories by contributing one part at a time.
 
 fristL -- TIMESTAMP
 --------------------------------------------------------------
+matthewY and josephW -- 2022-11-01 13:04
+collected feedback on design_wiki:
+    - History of all edits could be displayed as a separate component from the main page.
+    - Editing mode for the entire page of the wiki, as opposed to editing individually paragraphs separately.
+
 kevinL -- 2022-11-02 21:24
 changed some word choices in design.pdf and clarified some parts that were found to be confusing
 updated the front end site map to include a create button and the page it leads to
@@ -121,7 +122,7 @@ kevinL -- 2022-11-14 15:53
 created an html template to display the full story and wrote some code to detect if the user has already edited a story
 
 josephW -- 2022-11-14 20:31
-found a way to organize entries and
+created a dict in order to pass number of entries and story titles into the main.html file
 
 kevinL -- 2022-11-14 20:31
 created an extra section on the main page to separate stories the user has contributed to, and stories they haven't
