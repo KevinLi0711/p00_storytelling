@@ -1,8 +1,8 @@
 #Flying Karate Masters: Matthew Yee, Kevin Li, Joseph Wu
 #SoftDev
-#K19 -- Cookies
-#2022-11-03
-#time spent: 0.2 hours
+#P00 -- Story Game
+#2022-11-14
+#time spent: 13.5 hours
 
 from flask import Flask             #facilitate flask webserving
 from flask import render_template   #facilitate jinja templating
@@ -24,11 +24,21 @@ def login():
     #both the database and the cursor need to be connected in the function it is used in because they must run in the same thread
     users_db = sqlite3.connect(USER_DB_FILE)
     users_c = users_db.cursor()
+    story_db = sqlite3.connect(STORY_DB_FILE)
+    story_c = story_db.cursor()
+    
+    users_c.execute("SELECT tbl_name FROM sqlite_master")
+    if len(users_c.fetchall()) < 1:
+        users_c.execute("CREATE TABLE users(username TEXT PRIMARY KEY, password TEXT)")
+    story_c.execute("SELECT tbl_name FROM sqlite_master")
+    if len(story_c.fetchall()) < 1:
+        story_c.execute("CREATE TABLE stories(title PRIMARY KEY, full_text, latest_entry, contributors)")
+    
     error = ""
     username = ""
     users_c.execute("SELECT * FROM users")
     user_list = users_c.fetchall()
-    print(user_list)
+    print("valid usernames are :" + str(user_list))
 
     #the following code will only run if the user submits the form on the login page
     if request.method == "POST":
@@ -133,8 +143,10 @@ def register():
 def main():
     not_contributed = []
     contributed = []
+    created = []
     not_contributed_dict = {}
     contributed_dict = {}
+    created_dict = {}
 
     story_db = sqlite3.connect(STORY_DB_FILE)
     story_c = story_db.cursor()
@@ -145,12 +157,22 @@ def main():
     for title in story_list:
         story_c.execute("SELECT contributors FROM stories WHERE title=?", title)
         contributor_list = story_c.fetchone()[0]
-        if session['username'] in contributor_list:
+        creator_list = contributor_list.split(" ")
+
+        if session['username'] == creator_list[0]: #checks if the current user has created the story being checked
+            created.append(title[0])
+        elif session['username'] in contributor_list: #checks if the current user has contributed to story being checked
             contributed.append(title[0])
         else:
             not_contributed.append(title[0])
     print("Contributed: " + str(contributed))
     print("Not contributed: " + str(not_contributed))
+
+    for title in created: #uses the titles under the created list to populate a dictionary containing titles as keys and the number of contributors as definitions
+        story_c.execute("SELECT contributors FROM stories WHERE title=?", (title,))
+        numbers = story_c.fetchone()[0]
+        number_list = numbers.split(" ")
+        created_dict[title] = len(number_list)
 
     for title in not_contributed:
         story_c.execute("SELECT contributors FROM stories WHERE title=?", (title,))
@@ -166,7 +188,7 @@ def main():
         contributed_dict[title] = len(number_list)
 
     try:
-        return render_template('main.html', username=session['username'], not_contributed_dict = not_contributed_dict, contributed_dict = contributed_dict)
+        return render_template('main.html', username=session['username'], not_contributed_dict = not_contributed_dict, contributed_dict = contributed_dict, created_dict = created_dict)
     except:
         return app.redirect(app.url_for('login'))
 
@@ -186,11 +208,11 @@ def makeStory():
         #all expected errors
         stories_c.execute("SELECT title FROM stories")
         list_of_titles = stories_c.fetchall()
-        if (title,) in list_of_titles:
+        if (title,) in list_of_titles: #duplicate title
             list_of_errors.append("a story with that name already exists")
-        if (title.strip() == ''):
+        if (title.strip() == ''): #no title
             list_of_errors.append("your story needs a title")
-        if (contents.strip() == ''):
+        if (contents.strip() == ''): #no contents
             list_of_errors.append("your story needs some starting lines")
         if len(list_of_errors) > 0:
             return render_template('new_story.html', error_message = list_of_errors)
@@ -251,12 +273,39 @@ def edit():
             return render_template('full_story.html', story_title = title, full_story = full_text)
 
     return render_template('edit.html', story_title = title, latest_entry = previous_entry)
-    '''
-    elif 'username' in session:
-        return app.redirect("/main")
-    else:
-        return app.redirect("/")
-    '''
+
+
+@app.route('/search', methods = ['GET', 'POST'])
+def search():
+    search_dict = {}
+    
+    if request.method == "POST":
+        story_db = sqlite3.connect(STORY_DB_FILE)
+        story_c = story_db.cursor()
+        story_c.execute("SELECT title FROM stories")
+        story_list = story_c.fetchall()
+        error = ""
+
+        search_results = []
+
+        #story_list is a tuple list
+        for title in story_list:
+            if request.form['find'].lower() in title[0].lower():
+                search_results.append(title[0])
+        
+        #running through the newly created string list to find # of entries pertaining to each result
+        #result and numbers added to dict
+        for title in search_results:
+            story_c.execute("SELECT contributors FROM stories WHERE title=?", (title,))
+            numbers = story_c.fetchone()[0]
+            number_list = numbers.split(" ")
+            search_dict[title] = len(number_list)
+
+        if len(search_results) == 0:
+            error = f"No results found for '{request.form['find']}'"
+
+        return render_template('search.html', search = request.form['find'], search_dict = search_dict, error_message = error)
+
         
 
 

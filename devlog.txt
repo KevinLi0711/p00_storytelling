@@ -121,8 +121,19 @@ kevinL -- 2022-11-14 15:53
 created an html template to display the full story and wrote some code to detect if the user has already edited a story
 
 josephW -- 2022-11-14 20:31
-found a way to organize entries and
+created dictionary in order to store number of entries and story titles to pass to the html file
 
 kevinL -- 2022-11-14 20:31
 created an extra section on the main page to separate stories the user has contributed to, and stories they haven't
+
+kevinL -- 2022-11-14 22:34
+added lines to login() to create tables for the databases if they don't already exist
+
+matthewY -- 2022-11-14 23:07
+created a search bar
+    - the search bar shows both the titles and number of entries for each result
+    - returns an errror if the search returns no results
+    - searches are not case-sensitive
+restructured main page such that stories created by the user would appear under their own header
+
 ==============================================================

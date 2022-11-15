@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+
+<html>
+
+    <title>
+        Your Results
+    </title>
+    <form method="POST" action="/main">
+        <button name="Home">
+            Home
+        </button>
+    </form>
+    <form method="POST" action="/logout">
+        <button name="B_logout">
+            Logout
+        </button>
+    </form>
+
+    <h3>
+        Find Stories:
+        </h3>
+    
+        <form method="POST" action="/search">
+            <input type="text" name="find">
+            <button name="search_go">
+                Search
+            </button>
+            <br>
+        </form>
+
+
+    <p>
+        <font size = "+3">
+        Search Results for '{{search}}':
+        </font>
+    </p>
+
+
+    {% for title in search_dict %}
+        {{title}} 
+        <form method="POST" action="/edit">
+            <button name="title" value="{{title}}">
+                Visit
+            </button>
+            Number of entries: {{search_dict[title]}}
+            <br>
+            <br>
+        </form>
+    {% endfor %}
+
+    {{error_message}}
+
+</html>

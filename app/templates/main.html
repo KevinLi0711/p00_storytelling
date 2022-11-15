@@ -1,10 +1,5 @@
-<!-- 
-#Flying Karate Masters: Matthew Yee, Kevin Li, Joseph Wu
-#SoftDev
-#K19 -- Cookies
-#2022-11-04
-#time spent: 0.5 hours
- -->
+<!DOCTYPE html>
+
 <html>
 
     <title>
@@ -32,6 +27,33 @@
     </form>
 
     </p>
+
+    <h3>
+    Find Stories:
+    </h3>
+
+    <form method="POST" action="/search">
+        <input type="text" name="find">
+        <button name="search_go">
+            Search
+        </button>
+    </form>
+
+    <h3>
+        Stories you've created:
+    </h3>
+    {% for story in created_dict %}
+        {{story}} 
+        <form method="POST" action="/edit">
+            <button name="title" value="{{story}}">
+                View
+            </button>
+            Number of entries: {{created_dict[story]}}
+            <br>
+            <br>
+        </form>
+    {% endfor %}
+
     <h3>
         Stories you've contributed to:
     </h3>
@@ -39,9 +61,10 @@
         {{story}} 
         <form method="POST" action="/edit">
             <button name="title" value="{{story}}">
-                view
+                View
             </button>
             Number of entries: {{contributed_dict[story]}}
+            <br>
             <br>
         </form>
     {% endfor %}
@@ -53,9 +76,10 @@
         {{story}} 
         <form method="POST" action="/edit">
             <button name="title" value="{{story}}">
-                edit
+                Edit
             </button>
             Number of entries: {{not_contributed_dict[story]}}
+        <br>
         <br>
         </form>
     {% endfor %}
