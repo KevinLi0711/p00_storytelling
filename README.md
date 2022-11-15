@@ -1,7 +1,8 @@
 # Storytelling Game by Team Flying Karate Masters
 SoftDev  
 P00 -- Storytelling Game  
-2022-10-27  
+started: 2022-10-27  
+completed: 2022-11-15
   
 ## Roster and Roles:
   
