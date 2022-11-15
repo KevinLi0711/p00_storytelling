@@ -17,12 +17,15 @@ if you need to install all the requirements, you can try
 ```
 pip install -r requirements.txt
 ```
+clone the repo
 ```
 git clone https://github.com/KevinLi0711/p00_storytelling.git  
 ```
+cd into app/
 ```
 cd p00_storytelling/app
 ```
+run the file
 ```
 python3 __init__.py
 ```
