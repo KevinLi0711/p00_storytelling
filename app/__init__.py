@@ -24,6 +24,17 @@ def login():
     #both the database and the cursor need to be connected in the function it is used in because they must run in the same thread
     users_db = sqlite3.connect(USER_DB_FILE)
     users_c = users_db.cursor()
+    story_db = sqlite3.connect(STORY_DB_FILE)
+    story_c = story_db.cursor()
+    
+    users_c.execute("SELECT tbl_name FROM sqlite_schema")
+    if len(users_c.fetchall()) < 1:
+        users_c.execute("CREATE TABLE users(username TEXT PRIMARY KEY, password TEXT)")
+    story_c.execute("SELECT tbl_name FROM sqlite_schema")
+    if len(story_c.fetchall()) < 1:
+        story_c.execute("CREATE TABLE stories(title PRIMARY KEY, full_text, latest_entry, contributors)")
+
+
     error = ""
     username = ""
     users_c.execute("SELECT * FROM users")
