@@ -27,11 +27,14 @@ def login():
     story_db = sqlite3.connect(STORY_DB_FILE)
     story_c = story_db.cursor()
     
-    users_c.execute("SELECT tbl_name FROM sqlite_master")
-    if len(users_c.fetchall()) < 1:
+    try:
+        users_c.execute("SELECT * FROM users")
+    except:
         users_c.execute("CREATE TABLE users(username TEXT PRIMARY KEY, password TEXT)")
-    story_c.execute("SELECT tbl_name FROM sqlite_master")
-    if len(story_c.fetchall()) < 1:
+
+    try:
+        story_c.execute("SELECT * FROM stories")
+    except:
         story_c.execute("CREATE TABLE stories(title PRIMARY KEY, full_text, latest_entry, contributors)")
     
     error = ""
@@ -257,6 +260,9 @@ def edit():
 
         if 'contents' in request.form:
             #prevent users from adding this split key into the contents
+            if request.form['contents'].strip() == "":
+                error = "your entry is empty"
+                return render_template('edit.html', story_title = title, latest_entry = previous_entry, error_message = error)
             if "<br>" in request.form['contents']:
                 return render_template('edit.html', story_title = title, latest_entry = previous_entry, error_message = error)
 
