@@ -13,6 +13,10 @@ Matthew Yee:  Devo
 A website that lets users create stories by contributing one part at a time.
 
 ## Launch Codes:
+if you need to install all the requirements, you can try
+```
+pip install -r requirements.txt
+```
 ```
 git clone https://github.com/KevinLi0711/p00_storytelling.git  
 ```
