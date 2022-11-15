@@ -32,16 +32,32 @@
     </form>
 
     </p>
-    List of Stories: 
-    <br>
-    {% for story in story_list %}
+    <h3>
+        Stories you've contributed to:
+    </h3>
+    {% for story in contributed_dict %}
+        {{story}} 
+        <form method="POST" action="/edit">
+            <button name="title" value="{{story}}">
+                view
+            </button>
+            Number of entries: {{contributed_dict[story]}}
+            <br>
+        </form>
+    {% endfor %}
+
+    <h3>
+        Stories to browse:
+    </h3> 
+    {% for story in not_contributed_dict %}
         {{story}} 
         <form method="POST" action="/edit">
             <button name="title" value="{{story}}">
                 edit
             </button>
-        </form>
+            Number of entries: {{not_contributed_dict[story]}}
         <br>
+        </form>
     {% endfor %}
     <p>
 </html>

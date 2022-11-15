@@ -117,4 +117,12 @@ josephW -- 2022-11-14 13:17
 found a way to pass a title through the form action tag
 found a way to list all story titles on the main page, along with buttons for each that take the user to the editing page
 
+kevinL -- 2022-11-14 15:53
+created an html template to display the full story and wrote some code to detect if the user has already edited a story
+
+josephW -- 2022-11-14 20:31
+found a way to organize entries and
+
+kevinL -- 2022-11-14 20:31
+created an extra section on the main page to separate stories the user has contributed to, and stories they haven't
 ==============================================================

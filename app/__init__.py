@@ -131,22 +131,42 @@ def register():
 
 @app.route('/main', methods = ['GET', 'POST'])
 def main():
-    stories_available = []
+    not_contributed = []
+    contributed = []
+    not_contributed_dict = {}
+    contributed_dict = {}
 
     story_db = sqlite3.connect(STORY_DB_FILE)
     story_c = story_db.cursor()
     #get a list of table names
     story_c.execute("SELECT title FROM stories")
     story_list = story_c.fetchall()
+    #get a list of contributors and sort stories
+    for title in story_list:
+        story_c.execute("SELECT contributors FROM stories WHERE title=?", title)
+        contributor_list = story_c.fetchone()[0]
+        if session['username'] in contributor_list:
+            contributed.append(title[0])
+        else:
+            not_contributed.append(title[0])
+    print("Contributed: " + str(contributed))
+    print("Not contributed: " + str(not_contributed))
 
-    #for each table, print the title on a new line
-    for i in story_list:
-        for a in i:
-            stories_available.append(a)
-    
-    print(stories_available)
+    for title in not_contributed:
+        story_c.execute("SELECT contributors FROM stories WHERE title=?", (title,))
+        numbers = story_c.fetchone()[0]
+        number_list = numbers.split(" ")
+        not_contributed_dict[title] = len(number_list)
+
+    for title in contributed:
+        #story_list: [(ducks, ), (more ducks,), (even more ducks,)]
+        story_c.execute("SELECT contributors FROM stories WHERE title=?", (title,))
+        numbers = story_c.fetchone()[0] #"Kevin Matthew Joseph"
+        number_list = numbers.split(" ") #["Kevin", "Matthew", "Joseph"]
+        contributed_dict[title] = len(number_list)
+
     try:
-        return render_template('main.html', username=session['username'], story_list = stories_available)
+        return render_template('main.html', username=session['username'], not_contributed_dict = not_contributed_dict, contributed_dict = contributed_dict)
     except:
         return app.redirect(app.url_for('login'))
 
@@ -192,12 +212,43 @@ def edit():
     if request.method == "POST":
         stories_db = sqlite3.connect(STORY_DB_FILE)
         stories_c = stories_db.cursor()
-        title = request.form['title']
-        print(title)
 
+        title = request.form['title']
+        print("The title of the story is: " + title)
         stories_c.execute("SELECT latest_entry FROM stories WHERE title=?", (title,))
-        previous_entry = stories_c.fetchone()
-        previous_entry = previous_entry[0]
+        previous_entry = stories_c.fetchone()[0]
+
+        error = ""
+
+        stories_c.execute("SELECT contributors FROM stories WHERE title=?", (title,))
+        contributor_list = stories_c.fetchone()[0]
+        contributors = contributor_list
+        contributor_list = contributor_list.split(" ")
+        
+        stories_c.execute("SELECT full_text FROM stories WHERE title=?", (title,))
+        full_text = stories_c.fetchone()[0]
+
+        if session['username'] in contributor_list:
+            full_text = full_text.split("<br>")
+            return render_template('full_story.html', story_title = title, full_story = full_text)
+                
+
+        if 'contents' in request.form:
+            #prevent users from adding this split key into the contents
+            if "<br>" in request.form['contents']:
+                return render_template('edit.html', story_title = title, latest_entry = previous_entry, error_message = error)
+
+            full_text += "<br>" + request.form['contents'] 
+            contributors += " " + session['username']
+
+            stories_c.execute("UPDATE stories SET full_text=?, latest_entry=?, contributors=? WHERE title=?",(full_text, request.form['contents'], contributors, title))
+            stories_db.commit()
+
+            full_text = full_text.split("<br>")
+
+            stories_c.execute("SELECT * FROM stories WHERE title=?", (title,))
+            print(stories_c.fetchone())
+            return render_template('full_story.html', story_title = title, full_story = full_text)
 
     return render_template('edit.html', story_title = title, latest_entry = previous_entry)
     '''

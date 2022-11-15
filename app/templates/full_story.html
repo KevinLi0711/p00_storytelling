@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<!-- 
+#Flying Karate Masters: Matthew Yee, Kevin Li, Joseph Wu
+#SoftDev
+#K19 -- Cookies
+#2022-11-04
+#time spent: 0.5 hours
+ -->
+
+
+<html>
+
+  <head>
+    <title> FULL STORY PAGE </title>
+  </head>
+  Flying Karate Masters: Matthew Yee, Kevin Li, Joseph Wu 
+  <br>
+  <body>
+    <h1>
+      You have contributed to this story
+    </h1>
+    <form method="POST" action="/main">
+      <button name="Home">
+          Home
+      </button>
+    </form>
+    <h3>
+      {{story_title}}
+    </h3>
+      {% for line in full_story %}
+        {{line}}
+        <br>
+      {% endfor %}
+  </body>
+
+</html>
